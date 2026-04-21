@@ -27,6 +27,10 @@ public class Formatter {
         return sb.toString();
     }
 
+    public static String formatViews(long n) {
+        return formatNumber(n) + " " + plural(n, "просмотр", "просмотра", "просмотров");
+    }
+
     private static String pluralMinutes(long n) {
         return plural(n, "минуту", "минуты", "минут");
     }

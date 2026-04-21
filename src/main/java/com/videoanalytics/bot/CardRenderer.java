@@ -28,7 +28,7 @@ public class CardRenderer {
         if (!video.isAvailable()) sb.append("⚠️ ");
         sb.append(title).append("\n");
 
-        sb.append("👁 ").append(Formatter.formatNumber(video.getViewCount())).append(" просмотров");
+        sb.append("👁 ").append(Formatter.formatViews(video.getViewCount()));
         if (delta > 0) sb.append(" (+").append(Formatter.formatNumber(delta)).append(" с последнего обновления)");
         sb.append("\n");
 

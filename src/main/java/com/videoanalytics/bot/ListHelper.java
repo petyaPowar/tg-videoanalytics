@@ -34,7 +34,7 @@ public class ListHelper {
 
         long totalViews = videoService.getStats().getOrDefault("total_views", 0L);
 
-        String header = "Всего: " + totalAll + " видео · 👁 " + Formatter.formatNumber(totalViews) + " просмотров";
+        String header = "Всего: " + totalAll + " видео · 👁 " + Formatter.formatViews(totalViews);
 
         InlineKeyboardButton btnAll = InlineKeyboardButton.builder()
                 .text("Все".equals(filterLabel) ? "✅ Все" : "Все")

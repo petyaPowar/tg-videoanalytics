@@ -107,9 +107,9 @@ public class CommandHandler {
         long rtCount = stats.getOrDefault("rutube_count", 0L);
         long rtViews = stats.getOrDefault("rutube_views", 0L);
         return "📊 Статистика\n\n" +
-               "Всего: " + total + " видео · 👁 " + Formatter.formatNumber(totalViews) + " просмотров\n\n" +
-               "▶️ YouTube: " + ytCount + " видео · " + Formatter.formatNumber(ytViews) + " просмотров\n" +
-               "📺 RuTube: " + rtCount + " видео · " + Formatter.formatNumber(rtViews) + " просмотров";
+               "Всего: " + total + " видео · 👁 " + Formatter.formatViews(totalViews) + "\n\n" +
+               "▶️ YouTube: " + ytCount + " видео · " + Formatter.formatViews(ytViews) + "\n" +
+               "📺 RuTube: " + rtCount + " видео · " + Formatter.formatViews(rtViews);
     }
 
     void handleRefresh(long chatId) {
