@@ -20,6 +20,7 @@ ALLOWED_USER_IDS= # Telegram user ID через запятую
 DB_URL=           # jdbc:postgresql://localhost:5432/videoanalytics
 DB_USER=          # пользователь БД
 DB_PASSWORD=      # пароль БД
+MAX_VIDEOS=0      # максимум видео (0 — без ограничений)
 ```
 
 2. Создайте базу данных PostgreSQL:
