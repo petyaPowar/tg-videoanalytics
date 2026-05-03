@@ -1,6 +1,7 @@
 package com.videoanalytics.bot;
 
 import com.videoanalytics.model.Video;
+import com.videoanalytics.model.ViewStatEntry;
 import com.videoanalytics.service.VideoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,12 @@ public class CallbackHandler {
             handleRefreshAll(chatId, false);
         } else if ("refresh_all_menu".equals(data)) {
             handleRefreshAll(chatId, true);
+        } else if (data.startsWith("history_")) {
+            long videoId = Long.parseLong(data.substring("history_".length()));
+            handleHistory(chatId, msgId, videoId);
+        } else if (data.startsWith("back_card_")) {
+            long videoId = Long.parseLong(data.substring("back_card_".length()));
+            handleBackCard(chatId, msgId, videoId);
         } else if (data.startsWith("list_")) {
             String[] parts = data.split("_", 4);
             int offset = Integer.parseInt(parts[1]);
@@ -84,6 +91,23 @@ public class CallbackHandler {
             bot.clearCards(chatId);
             ListHelper.sendList(bot, videoService, chatId, filter, sort, offset, activeCardMessageIds);
         }
+    }
+
+    private void handleHistory(long chatId, int msgId, long videoId) {
+        videoService.findById(videoId).ifPresentOrElse(video -> {
+            List<ViewStatEntry> history = videoService.getViewHistory(videoId);
+            editMessage(chatId, msgId,
+                    CardRenderer.renderHistoryText(video, history),
+                    CardRenderer.renderHistoryButtons(videoId));
+        }, () -> editMessage(chatId, msgId, "Видео не найдено.", menuOnlyKb()));
+    }
+
+    private void handleBackCard(long chatId, int msgId, long videoId) {
+        videoService.findById(videoId).ifPresentOrElse(video ->
+                editMessage(chatId, msgId,
+                        CardRenderer.renderText(video),
+                        CardRenderer.renderButtons(video)),
+                () -> editMessage(chatId, msgId, "Видео не найдено.", menuOnlyKb()));
     }
 
     private void handleRefreshOne(long chatId, int msgId, long videoId) {

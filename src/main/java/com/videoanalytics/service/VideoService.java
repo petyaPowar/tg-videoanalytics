@@ -6,6 +6,7 @@ import com.videoanalytics.exception.DuplicateVideoException;
 import com.videoanalytics.exception.VideoLimitException;
 import com.videoanalytics.model.Platform;
 import com.videoanalytics.model.Video;
+import com.videoanalytics.model.ViewStatEntry;
 import com.videoanalytics.platform.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,6 +156,10 @@ public class VideoService {
 
     public void deleteById(long id) {
         repository.deleteById(id);
+    }
+
+    public List<ViewStatEntry> getViewHistory(long videoId) {
+        return repository.findViewStats(videoId, 10);
     }
 
     public Map<String, Long> getStats() {

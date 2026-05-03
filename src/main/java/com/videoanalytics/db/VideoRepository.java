@@ -2,6 +2,7 @@ package com.videoanalytics.db;
 
 import com.videoanalytics.model.Platform;
 import com.videoanalytics.model.Video;
+import com.videoanalytics.model.ViewStatEntry;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -141,6 +142,28 @@ public class VideoRepository {
             throw new RuntimeException(e);
         }
         return 0;
+    }
+
+    public List<ViewStatEntry> findViewStats(long videoId, int limit) {
+        String sql = "SELECT view_count, recorded_at FROM view_stats WHERE video_id=? ORDER BY recorded_at DESC LIMIT ?";
+        List<ViewStatEntry> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, videoId);
+            ps.setInt(2, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Timestamp ts = rs.getTimestamp("recorded_at");
+                    result.add(new ViewStatEntry(
+                            rs.getLong("view_count"),
+                            ts != null ? ts.toLocalDateTime() : null
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
     public void saveViewStat(long videoId, long viewCount) {
