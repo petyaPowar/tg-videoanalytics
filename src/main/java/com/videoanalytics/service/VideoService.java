@@ -72,6 +72,9 @@ public class VideoService {
 
         long generatedId = repository.save(video);
         video.setId(generatedId);
+        if (video.isAvailable()) {
+            repository.saveViewStat(generatedId, video.getViewCount());
+        }
         return video;
     }
 
@@ -92,6 +95,9 @@ public class VideoService {
             video.setLastError(e.getMessage());
         }
         repository.update(video);
+        if (video.isAvailable()) {
+            repository.saveViewStat(video.getId(), video.getViewCount());
+        }
         return video;
     }
 
@@ -120,6 +126,9 @@ public class VideoService {
                     errors++;
                 }
                 repository.update(v);
+                if (v.isAvailable()) {
+                    repository.saveViewStat(v.getId(), v.getViewCount());
+                }
                 onProgress.accept("Обновляю... " + (i + 1) + "/" + total);
             }
         } finally {

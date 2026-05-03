@@ -143,6 +143,18 @@ public class VideoRepository {
         return 0;
     }
 
+    public void saveViewStat(long videoId, long viewCount) {
+        String sql = "INSERT INTO view_stats (video_id, view_count) VALUES (?, ?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, videoId);
+            ps.setLong(2, viewCount);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void deleteById(long id) {
         String sql = "DELETE FROM videos WHERE id=?";
         try (Connection conn = dataSource.getConnection();

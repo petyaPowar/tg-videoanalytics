@@ -1,6 +1,7 @@
 package com.videoanalytics.platform;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.VideoListResponse;
@@ -43,6 +44,15 @@ public class YouTubeClient implements PlatformClient {
             return new VideoData(viewCount, title);
         } catch (PlatformException e) {
             throw e;
+        } catch (GoogleJsonResponseException e) {
+            boolean isQuota = e.getDetails() != null &&
+                    e.getDetails().getErrors().stream().anyMatch(err ->
+                            "quotaExceeded".equals(err.getReason()) ||
+                            "dailyLimitExceeded".equals(err.getReason()));
+            if (isQuota) {
+                throw new PlatformException("Квота YouTube API исчерпана, попробуйте завтра");
+            }
+            throw new PlatformException("Ошибка YouTube API: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new PlatformException("Ошибка YouTube API: " + e.getMessage(), e);
         }

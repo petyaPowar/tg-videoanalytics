@@ -12,6 +12,13 @@ CREATE TABLE IF NOT EXISTS videos (
     created_at   TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS view_stats (
+    id          BIGSERIAL PRIMARY KEY,
+    video_id    BIGINT NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
+    view_count  BIGINT NOT NULL,
+    recorded_at TIMESTAMP DEFAULT NOW()
+);
+
 CREATE OR REPLACE VIEW stats_summary AS
 SELECT
     COUNT(*)                                          AS total_videos,
